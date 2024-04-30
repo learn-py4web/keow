@@ -9,14 +9,24 @@ app.data = {
     data: function() {
         return {
             // Complete as you see fit.
-            my_value: 1, // This is an example.
-        };
+            keows: [],
+            keow: "",
+        }
     },
     methods: {
         // Complete as you see fit.
-        my_function: function() {
-            // This is an example.
-            this.my_value += 1;
+        add_keow: function () {
+            let self = this;
+            axios.post(add_keow_url, {
+                keow_content: this.keow,
+            }).then(function (r) {
+                app.vue.keows.push({
+                    id: r.data.id,
+                    keow_content: self.keow,
+                });
+                self.keow = "";
+            });
+        
         },
     }
 };
@@ -24,8 +34,8 @@ app.data = {
 app.vue = Vue.createApp(app.data).mount("#app");
 
 app.load_data = function () {
-    axios.get(my_callback_url).then(function (r) {
-        app.vue.my_value = r.data.my_value;
+    axios.get(get_keows_url).then(function (r) {
+        app.vue.keows = r.data.keows;
     });
 }
 

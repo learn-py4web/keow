@@ -31,18 +31,24 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
 
-url_signer = URLSigner(session)
-
 @action('index')
-@action.uses('index.html', db, auth, url_signer)
+@action.uses('index.html', db, auth.user)
 def index():
     return dict(
-        # COMPLETE: return here any signed URLs you need.
-        my_callback_url = URL('my_callback', signer=url_signer),
+        add_keow_url = URL('add_keow'),
+        get_keows_url = URL('get_keows'),
     )
 
-@action('my_callback')
-@action.uses() # Add here things like db, auth, etc.
-def my_callback():
-    # The return value should be a dictionary that will be sent as JSON.
-    return dict(my_value=3)
+@action('add_keow', method="POST")
+@action.uses(db, auth.user, auth)
+def add_keow():
+    keow_content = request.json.get('keow_content')
+    id = db.keow.insert(keow_content=keow_content)
+    print("keow_content:", keow_content)
+    return dict(id=id)
+
+@action('get_keows', method="GET")
+@action.uses(db, auth.user, auth)
+def get_keows():
+    keows = db(db.keow).select().as_list()
+    return dict(keows=keows)
