@@ -22,15 +22,17 @@
         {{ keow.keow_content }}
       </p>
       <p class="has-text-link">
-        <span>
-          <i class="fa fa-thumbs-up"></i>
-          <i class="fa fa-thumbs-o-up"></i>
+        <span @mouseout="thumb_out(idx)">
+          <span @mouseover="thumb_over(idx, 1)" @click="thumb_set(idx, 1)">
+            <i v-if="keow.thumb_display == 1" class="fa fa-thumbs-up"></i>
+            <i v-else class="fa fa-thumbs-o-up"></i>
+          </span>
+          <span class="ml-1" @mouseover="thumb_over(idx, -1)" @click="thumb_set(idx, -1)">
+            <i v-if="keow.thumb_display == -1" class="fa fa-thumbs-down fa-flip-horizontal"></i>
+            <i v-else class="fa fa-thumbs-o-down fa-flip-horizontal"></i> 
+          </span>
         </span>
-        <span class="ml-1">
-          <i class="fa fa-thumbs-down fa-flip-horizontal"></i>
-          <i class="fa fa-thumbs-o-down fa-flip-horizontal"></i> 
-        </span>
-        <span class="ml-3">12</span>
+        <span class="ml-3">{{keow.num_thumbs}}</span>
       </p>
     </div>
   </div>
@@ -43,6 +45,7 @@
 <script>
   let add_keow_url = "[[=XML(add_keow_url)]]";
   let get_keows_url = "[[=XML(get_keows_url)]]";
+  let set_thumb_url = "[[=XML(set_thumb_url)]]";
 </script>
 <script src="js/index.js"></script>
 [[end]]

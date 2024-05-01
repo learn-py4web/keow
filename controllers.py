@@ -37,6 +37,7 @@ def index():
     return dict(
         add_keow_url = URL('add_keow'),
         get_keows_url = URL('get_keows'),
+        set_thumb_url = URL('set_thumb'),
     )
 
 @action('add_keow', method="POST")
@@ -50,5 +51,13 @@ def add_keow():
 @action('get_keows', method="GET")
 @action.uses(db, auth.user, auth)
 def get_keows():
-    keows = db(db.keow).select().as_list()
+    keows = db(db.keow).select(orderby=~db.keow.created_on).as_list()
     return dict(keows=keows)
+
+@action('set_thumb', method="POST")
+@action.uses(db, auth.user, auth)
+def set_thumb():
+    keow_id = request.json.get('keow_id')
+    thumb = request.json.get('thumb')
+    # Complete. 
+    return "ok"

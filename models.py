@@ -16,6 +16,9 @@ def get_time():
 db.define_table('keow',
                 Field('keow_content', 'text'),
                 Field('user_email', default=get_user_email),
+                Field('created_on', 'datetime', default=get_time),
                 )
+
+
 
 db.commit()
