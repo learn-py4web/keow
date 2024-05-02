@@ -51,7 +51,11 @@ def add_keow():
 @action('get_keows', method="GET")
 @action.uses(db, auth.user, auth)
 def get_keows():
-    keows = db(db.keow).select(orderby=~db.keow.created_on).as_list()
+    result = db(db.thumb.rater == get_user_email()).select(
+        db.keow.ALL, db.thumb.thumb, 
+        left=db.thumb.on(db.keow.id == db.thumb.keow_id)).as_list()
+    keows = [d['keow'] | d['thumb'] for d in result]
+    print("keows:", keows)
     return dict(keows=keows)
 
 @action('set_thumb', method="POST")
@@ -59,5 +63,10 @@ def get_keows():
 def set_thumb():
     keow_id = request.json.get('keow_id')
     thumb = request.json.get('thumb')
-    # Complete. 
+    db.thumb.update_or_insert(
+        (db.thumb.keow_id == keow_id) & (db.thumb.rater == get_user_email()),
+        keow_id=keow_id,
+        rater=get_user_email(),
+        thumb=thumb,
+    )
     return "ok"

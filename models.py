@@ -17,8 +17,12 @@ db.define_table('keow',
                 Field('keow_content', 'text'),
                 Field('user_email', default=get_user_email),
                 Field('created_on', 'datetime', default=get_time),
-                )
+)
 
-
+db.define_table('thumb',
+                Field('keow_id', 'reference keow'),
+                Field('rater', default=get_user_email),
+                Field('thumb', 'integer', default=0),
+)
 
 db.commit()
