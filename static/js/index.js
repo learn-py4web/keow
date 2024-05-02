@@ -33,7 +33,11 @@ app.data = {
         thumb_set: function (keow_idx, thumb) {
             let keow = app.vue.keows[keow_idx];
             keow.thumb = thumb;
-            axios.post(set_thumb_url, {keow_id: keow.id, thumb: thumb});
+            axios.post(set_thumb_url, {keow_id: keow.id, thumb: thumb}).then(
+                function (r) {
+                    keow.total = r.data.total;
+                }   
+            );
         },
         thumb_out: function (keow_idx) {
             let keow = app.vue.keows[keow_idx];

@@ -51,10 +51,15 @@ def add_keow():
 @action('get_keows', method="GET")
 @action.uses(db, auth.user, auth)
 def get_keows():
-    result = db(db.thumb.rater == get_user_email()).select(
+    result = db().select(
         db.keow.ALL, db.thumb.thumb, 
-        left=db.thumb.on(db.keow.id == db.thumb.keow_id)).as_list()
+        left=db.thumb.on((db.keow.id == db.thumb.keow_id) & 
+                         (db.thumb.rater == get_user_email()))).as_list()
     keows = [d['keow'] | d['thumb'] for d in result]
+    # Now adds to this list the total kews for each keow. 
+    for k in keows:
+        thumb_values = db(db.thumb.keow_id == k['id']).select(db.thumb.thumb).as_list()
+        k['total'] = sum([d['thumb'] for d in thumb_values])
     print("keows:", keows)
     return dict(keows=keows)
 
@@ -69,4 +74,6 @@ def set_thumb():
         rater=get_user_email(),
         thumb=thumb,
     )
-    return "ok"
+    # Reads the total number of thumbs for this keow.
+    thumb_values = db(db.thumb.keow_id == keow_id).select(db.thumb.thumb).as_list()
+    return dict(total=sum([d['thumb'] for d in thumb_values]))
