@@ -15,6 +15,10 @@
   <textarea class="textarea" placeholder="Compose your Keow" v-model="keow"></textarea>
   <button class="mt-3 button is-primary" @click="add_keow">Keow!</button>
 
+  <div class="mt-3">
+    <input class="input" type="text" placeholder="Search" v-model="search"
+     @keyup="do_search">
+  </div>
 
   <div class="card mt-4" v-for="(keow, idx) in keows">
     <div class="card-content">

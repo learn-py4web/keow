@@ -48,10 +48,15 @@ def add_keow():
     print("keow_content:", keow_content)
     return dict(id=id)
 
+
 @action('get_keows', method="GET")
 @action.uses(db, auth.user, auth)
 def get_keows():
-    result = db().select(
+    q = None
+    s = request.params.get('search')
+    if s:
+        q = db.keow.keow_content.contains(s)
+    result = db(q).select(
         db.keow.ALL, db.thumb.thumb, 
         left=db.thumb.on((db.keow.id == db.thumb.keow_id) & 
                          (db.thumb.rater == get_user_email()))).as_list()

@@ -11,6 +11,7 @@ app.data = {
             // Complete as you see fit.
             keows: [],
             keow: "",
+            search: "",
         }
     },
     methods: {
@@ -47,13 +48,16 @@ app.data = {
             let keow = app.vue.keows[keow_idx];
             keow.thumb_display = thumb;
         },
+        do_search: function () {
+            app.load_data(this.search);
+        }
     }
 };
 
 app.vue = Vue.createApp(app.data).mount("#app");
 
-app.load_data = function () {
-    axios.get(get_keows_url).then(function (r) {
+app.load_data = function (search = "") {
+    axios.get(get_keows_url, {params: {search: search}}).then(function (r) {
         let ks = r.data.keows;
         for (let k of ks) {
             k.thumb_display = k.thumb;
